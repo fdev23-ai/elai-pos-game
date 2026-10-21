@@ -106,8 +106,8 @@ kbd {
   text-align: left; width: 100%; cursor: pointer;
   background: var(--surface-2); border: 2px solid transparent; border-radius: 12px;
   padding: .7rem .8rem; font: inherit; color: inherit;
-  animation: drop .3s ease-out;
 }
+.ticket.new { animation: drop .3s ease-out; }
 .ticket:hover { border-color: var(--line); }
 .ticket.active { border-color: var(--gold); background: #fff6df; }
 .ticket.urgent .patience i { background: var(--bad); }

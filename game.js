@@ -75,7 +75,7 @@ function spawnTicket() {
 
   // customers get less patient as the rush builds
   const patience = Math.max(16, 32 - elapsed / 6) * 1000;
-  const ticket = { id: state.nextId++, type, items, patience, left: patience, born: performance.now() };
+  const ticket = { id: state.nextId++, type, items, patience, left: patience, born: performance.now(), isNew: true };
   if (type === "dine") ticket.table = pick(tables);
   if (type === "take") ticket.name = pick(NAMES);
   if (type === "delivery") {
@@ -193,7 +193,7 @@ function showIntro() {
     <div class="badge">🍽️</div>
     <h2>Rush Hour at ${CONFIG.restaurant.split(",")[0]}</h2>
     <ol>
-      <li>Tap an <strong>order ticket</strong> on the left.</li>
+      <li>Tap an incoming <strong>order ticket</strong>.</li>
       <li>Pick <strong>Dine-in</strong> (choose the table), <strong>Takeaway</strong>, or <strong>Delivery</strong> (assign a rider).</li>
       <li>Tap the <strong>menu items</strong> to match the order.</li>
       <li>Hit <strong>Send to kitchen</strong>. Faster orders score more points.</li>
@@ -345,7 +345,7 @@ function renderTickets() {
     return;
   }
   box.innerHTML = state.tickets.map((t) => `
-    <button class="ticket ${t.id === state.activeId ? "active" : ""}" data-id="${t.id}">
+    <button class="ticket ${t.id === state.activeId ? "active" : ""} ${t.isNew ? "new" : ""}" data-id="${t.id}">
       <div class="ticket-head"><span>#${t.id}</span><span>${MODE_LABEL[t.type]}</span></div>
       <div class="ticket-sub">${ticketSubtitle(t)}</div>
       <ul>${Object.entries(t.items).map(([id, q]) => `<li>${q} × ${MENU.find((m) => m.id === id).name}</li>`).join("")}</ul>
@@ -354,6 +354,7 @@ function renderTickets() {
   box.querySelectorAll(".ticket").forEach((el) => {
     el.onclick = () => selectTicket(Number(el.dataset.id));
   });
+  state.tickets.forEach((t) => { t.isNew = false; });
 }
 
 function updatePatienceBars() {
